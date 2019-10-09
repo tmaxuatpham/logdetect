@@ -1,0 +1,46 @@
+SEC [1],  Logsurfer  [2]  and  Swatch  [3]  are  three  typical  ex-amples of a rule-based log analysis tool
+
+
+
+Mining  program  invariants  is  a  very importantstep  in our approach. There are some research efforts related to this  subject. Ernst et  al.developedDaikon [10] to  dis-cover program invariantsfor supporting program evolu-tion.Daikon  can dynamicallydiscover  invariants  at specific  source  code  points  by  checkingthe  values  of all program variablesin the scope. Jiang et al.proposedasearchalgorithm  to  infer  likely  invariants  in  distri-buted systems[12]. Rather thansearching the invariants of program variables, theiralgorithmsearchesinvariantpair-wisecorrelationsbetween two flow intensities, such  as  traffic  volume  and  CPU usage  thatare  moni-tored in distributed systems.They alsoproposedan EM algorithm in [11], and extendedtheir work to minecor-relationsamong  multiple  flow  intensities.In  contrast withthese methods, we  mineinvariantrelationshipsamong  the  counts  of  log  message  types,which present the characteristics  ofthe program  execution  flow. In addition, we  focus on sparse and integer invariants that can revealthe  essential relations  of  the system execu-tion  logic andare easilyunderstood  by  human  opera-tors.
+
+
+Each equation corresponds to a specific invariant ofthe program executionflow, and the validity of such invariants is  notaffected by the  dynamics of the work-loads,the difference  ofsystem inputsor  the  interleav-ing  of  multiple  instances. In  this  paper,  we  call  them execution flow invariants
+
+
+There are mainly two reasons that  we  look  atlinearinvariants amongthe  countsof differenttype  oflog  messages. 
+	First,  linear  invariants encodemeaningful characteristics  ofsystem  execution paths.  They  universally  exist  in  many  standalone  or distributed  systems.
+	Second,  an  anomaly  often  mani-fests  a  different  execution  path  from  the  normal  ones.
+
+Therefore,  a  violation  of  such relations(invariants)means  a  program  executionanomaly. Because  log  se-quences  record  the  underlying execution  flowof the system  components,  we  believe  there  are  many  such linear equations,   i.e.   invariants,among   the   log   se-quences. If we can automatically discoverall such inva-riants  from the  collected historical  log  data,  we  can facilitate many system management tasks. example
+	By  checking  whether  a  log  sequence  violates theinvariants,   we   can   detect   system problems.   As mentioned above,  a  violation  of  an  invariant  often means an anomaly in the program‟s execution
+	
+	Each  invariant  contains  a  constraint  or an attribute of a system component‟sexecution flow. Based on the related execution flow properties of the broken invariants,  system  operators  can  find  the  potential causes offailure.
+
+	Theinvariants  can  help  system  operators  to  better understand the structureand behavior of a system.
+
+
+If  the  dimension  of  the  invariant  space  is 𝑟,  there  existsat  most 𝑟different  invariants satisfyingthat eachof them cannot be a linear combination of the others.
+
+Furthermore,the  number  of  log  message typesin  each  message  groupis  usually  much  smaller than  the  total  number  of  log message  types. If  we  can divideall log  messages into differentgroups  properly and  mine  the  invariants  on  different  kinds  of  groups respectively,  the  search  space  of  the  algorithm  can  be largely  reduced.There aresome  systems  in  which  log messages do  notcontainsuch  parameters.  Just  as  prior work [5], our approach doesnot target these systems.
+
+Even with the grouping strategy, the computational cost of invariant searching is still quite large. We try to fur-ther reduce the computational cost by introducing early termination  and pruningstrategies  which  will  be  dis-cussed in Section 6.3.
+
+
+
+
+Log parsing. In most systems, log messages are usuallyunstructured  free-form  text  messages, and are difficult to be directly processed by a computer.In the log pars-ing  step,  we  convert  a  log  message  froman unstruc-tured text stringto a tuple-form representation that con-sists ofatimestamp, a messagesignature(i.e. a constant free  form  text  string  to  represent  a  log message  type),and a list of message parameter values.
+
+
+Log message groupingand counting.Once parameter values  and  log  message  signatures  are separatedfrom all   log   messages,   we   first   automatically   discover whether  a  set  of  parameters  correspond  to  the  same program  variable.  Then, we group log  messages that contain  the samevalue  of  the  same  program  variabletogether. For example, the  log  messages containingthe same request  IDvalueare  grouped  together.  As  men-tioned  above, dividing log  messages into  someclose inner-related  groups  can  largely  reduce  the  computa-tional cost. For each message group, we count the num-ber  of log  messages  for  each  message  typeto obtain  a message count vectorfor further processing.
+
+
+Invariant  mining. Next,  we  try  to  find  a  compact sparse integer invariant set for each typeof the log message groups. Message groups extracted accordingto the same program variable areconsidered asthe same typeof group. For example, the group of log messages with request  ID  #1#  and  the  group  of  log  messages  with  re-quest  ID  #2#  are  the  same typeof  message  groups. In this  paper,  we  combine  a  brute  force  searching  algo-rithm  and  a greedysearching  algorithm  to  make  the searching process tractable. 
+
+
+Anomaly detection. We apply the obtained set of inva-riantsto detect anomalies.  A log sequence that violates an invariant is labeled as an anomaly
+
+
+
+
+
