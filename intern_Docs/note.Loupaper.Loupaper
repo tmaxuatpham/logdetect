@@ -41,6 +41,39 @@ Invariant  mining. Next,  we  try  to  find  a  compact sparse integer invariant
 Anomaly detection. We apply the obtained set of inva-riantsto detect anomalies.  A log sequence that violates an invariant is labeled as an anomaly
 
 
+In  this  paper,  we  use  the algorithm thatwe  have  previously published [14]  to extractmessagesignaturesand  parameter  values  from log  messages. It  can  achieve  an  accuracy  of  more  than 95%[14].Becausethe log parser is not the focus of this paper, we do not discuss the detailsof the algorithm.
+
+
+After  message signatureand parametervalueextraction, each log message 𝑚with itstime  stamp 𝑇(𝑚)can  be  represented  by  a  tuple 𝑇𝑚,𝐾𝑚,𝑃𝑉𝑚,1,𝑃𝑉𝑚,2,...,𝑃𝑉𝑚,𝑃𝑁𝑚,we call  such  tuples  the tuple-form  representationsof  the log messages
 
 
 
+
+
+
+
+INVARIANT MINING
+
+		We collect thelog message groups corresponding to the same program variabletogetherand  discover their invariants  as  de-scribed  in Algorithm2.
+
+		At  first, for each log  message group, we  count  the  number of log  messages for  each log  messagetype in  the  message  group to  obtain one message count vector. 
+
+		For all log messages groups that are related to the same program variable, we can extract a set of message count vectors.
+
+		The message count vec-tors that correspond to the same program variableform the  count  matrix 𝑿(Eq.4). 
+
+		Then,  we need  to  identify the  invariant  space  and  the  row  space  of Xby  using singular  value decomposition and  analysis.
+
+		Next,  we find  the  sparse  invariant  vectors in  the  invariant  space.
+
+			To  find  a  sparse  invariant  vector  with 𝑘non-zero coef-ficientswith a small valueof 𝑘(e.g, <5in most cases),we can use a brute  force search algorithm to obtain the optimal  solution.  However,  when kis  large, the brute force algorithm has to search in a huge searching space. In this case, we use a greedy algorithm[19]to obtain an invariant candidate.
+
+			Finally, we validate the found invariants using the collected historical logs.
+
+
+	Estimate the invariant space
+		Once  we have constructedthe  matrix 𝑿fromthe  col-lectedhistorical  logs,  we  can estimatethe  invariant spaceby singularvalue decomposition(SVD)opera-tion.
+
+		Instead of the energy ratio, we use the support ratio as a criterionto  determine  the  invariant  space(and, at  the sametime,  the  row  space). It  can  directly  measure  the matching  degree  between  the  collected  logs  and  the invariants. 
+
+		For an invariant, the support ratio is defined as the percentageof the log message groupsthat do not breakthe  invariant.			
